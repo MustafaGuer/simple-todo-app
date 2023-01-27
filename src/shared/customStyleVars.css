@@ -1,0 +1,10 @@
+:root {
+    --color-red: #5f0000;
+    --color-red-hover: #881111;
+    --color-dark-bg: #1f1f1f;
+    --color-white: #fff;
+    --color-lightgray: #ccc;
+    --border-radius: 10px;
+    --border-radius-light: 5px;
+    --transition: all 225ms ease-in-out;
+  }
