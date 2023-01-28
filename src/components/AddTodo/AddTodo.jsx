@@ -4,6 +4,7 @@ import Card from "../../UI/Card/Card";
 import Button from "../../UI/Button/Button";
 
 import styles from "./AddTodo.module.css";
+import ErrorModal from "../../UI/ErrorModal/ErrorModal";
 
 const AddTodo = (props) => {
   const setISODateTime = () => {
@@ -27,11 +28,17 @@ const AddTodo = (props) => {
   const addTodoHandler = (event) => {
     event.preventDefault();
     if (enteredTodo.length < 3) {
-      console.error("TODO ERROR");
+      props.onCallErrorModal({
+        title: "Invalid input",
+        message: "Please enter at least 3 letter.",
+      });
       return;
     }
     if (new Date(enteredDateTime).getTime() + 100000 < Date.now()) {
-      console.error("DATE ERROR");
+      props.onCallErrorModal({
+        title: "Invalid Date",
+        message: "You can't use a date or time in the past",
+      });
       return;
     }
 
@@ -48,29 +55,45 @@ const AddTodo = (props) => {
   };
 
   return (
-    <Card className={styles.card}>
-      <form onSubmit={addTodoHandler}>
-        <label htmlFor="todo">Todo</label>
-        <input
-          id="todo"
-          type="text"
-          value={enteredTodo}
-          placeholder="Type your todo..."
-          onChange={todoChangeHandler}
+    <div>
+      {props.onError && (
+        <ErrorModal
+          title={props.onError.title}
+          message={props.onError.message}
+          onConfirm={props.onCloseErrorModal}
+          onDelete={props.onDelete}
+          onConfirmDeleteError={props.onConfirmDeleteError}
         />
-        <label htmlFor="date">Date/Time</label>
-        <input type="hidden" id="timezone" name="timezone" value="+01:00" />
-        <input
-          id="date"
-          type="datetime-local"
-          value={enteredDateTime}
-          onChange={dateTimeChangeHandler}
-        />
-        <div className={styles.actions}>
-          <Button type="submit">Add Todo</Button>
-        </div>
-      </form>
-    </Card>
+      )}
+      <Card className={styles.card}>
+        <form onSubmit={addTodoHandler}>
+          <label htmlFor="todo">Todo</label>
+          <input
+            id="todo"
+            type="text"
+            value={enteredTodo}
+            placeholder="Type your todo..."
+            onChange={todoChangeHandler}
+          />
+          <label htmlFor="date">Date/Time</label>
+          <input type="hidden" id="timezone" name="timezone" value="+01:00" />
+          <input
+            id="date"
+            type="datetime-local"
+            value={enteredDateTime}
+            onChange={dateTimeChangeHandler}
+          />
+          <div className={styles.actions}>
+            <Button type="submit">Add Todo</Button>
+            {props.todosAmount > 0 && (
+              <Button type="button" onClick={props.onDeleteTodos}>
+                Delete Todos
+              </Button>
+            )}
+          </div>
+        </form>
+      </Card>
+    </div>
   );
 };
 
