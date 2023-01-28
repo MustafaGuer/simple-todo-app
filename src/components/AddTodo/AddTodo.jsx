@@ -6,36 +6,44 @@ import Button from "../../UI/Button/Button";
 import styles from "./AddTodo.module.css";
 
 const AddTodo = (props) => {
+  const setISODateTime = () => {
+    let now = new Date();
+    let year = now.getFullYear();
+    let month = ("0" + (now.getMonth() + 1)).slice(-2);
+    let day = ("0" + now.getDate()).slice(-2);
+    let hours = ("0" + now.getHours()).slice(-2);
+    let minutes = ("0" + now.getMinutes()).slice(-2);
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   const [enteredTodo, setEnteredTodo] = useState("");
-  const [enteredDate, setEnteredDate] = useState("");
-  const [enteredTime, setEnteredTime] = useState("");
+  const [enteredDateTime, setEnteredDateTime] = useState(setISODateTime);
 
   const todoChangeHandler = (event) => setEnteredTodo(event.target.value);
 
-  const dateChangeHandler = (event) => setEnteredDate(event.target.value);
-
-  const timeChangeHandler = (event) => setEnteredTime(event.target.value);
+  const dateTimeChangeHandler = (event) =>
+    setEnteredDateTime(event.target.value);
 
   const addTodoHandler = (event) => {
     event.preventDefault();
-    // console.log({
-    //   id: `todo_${props.todosAmount}`,
-    //   todo: todo,
-    //   date: date,
-    //   time: time,
-    // });
+    if (enteredTodo.length < 3) {
+      console.error("TODO ERROR");
+      return;
+    }
+    if (new Date(enteredDateTime).getTime() + 100000 < Date.now()) {
+      console.error("DATE ERROR");
+      return;
+    }
 
     const todo = {
       id: `todo-${props.todosAmount + 1}`,
       todo: enteredTodo,
-      date: enteredDate,
-      time: enteredTime,
+      date: enteredDateTime,
     };
     props.onAddTodo(todo);
 
     setEnteredTodo("");
-    setEnteredDate("");
-    setEnteredTime("");
+    setEnteredDateTime(setISODateTime);
   };
 
   return (
@@ -49,19 +57,13 @@ const AddTodo = (props) => {
           placeholder="Type your todo..."
           onChange={todoChangeHandler}
         />
-        <label htmlFor="date">Date</label>
+        <label htmlFor="date">Date/Time</label>
+        <input type="hidden" id="timezone" name="timezone" value="+01:00" />
         <input
           id="date"
-          type="date"
-          value={enteredDate}
-          onChange={dateChangeHandler}
-        />
-        <label htmlFor="time">Time</label>
-        <input
-          id="time"
-          type="time"
-          value={enteredTime}
-          onChange={timeChangeHandler}
+          type="datetime-local"
+          value={enteredDateTime}
+          onChange={dateTimeChangeHandler}
         />
         <div className={styles.actions}>
           <Button type="submit">Add Todo</Button>
