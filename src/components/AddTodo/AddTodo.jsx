@@ -36,7 +36,7 @@ const AddTodo = (props) => {
     }
 
     const todo = {
-      id: `todo-${props.todosAmount + 1}`,
+      id: Math.random(),
       todo: enteredTodo,
       date: enteredDateTime,
     };

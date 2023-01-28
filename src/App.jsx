@@ -11,10 +11,9 @@ function App() {
 
   const addTodoHandler = (todo) => {
     setTodoList((prevTodoList) => [...prevTodoList, todo]);
-
-    if (todoList.length > 0)
-      localStorage.setItem("todos", JSON.stringify(todoList));
   };
+
+  localStorage.setItem("todos", JSON.stringify(todoList));
 
   const deleteTodoHandler = (id) => {
     console.log(id);
@@ -22,11 +21,14 @@ function App() {
       const updatedTodos = prevTodoList.filter((todo) => todo.id !== id);
       return updatedTodos;
     });
-    if (todoList.length > 0)
-      localStorage.setItem("todos", JSON.stringify(todoList));
-    else localStorage.removeItem("todos");
-  };
 
+    if (todoList.length > 0) {
+      localStorage.setItem("todos", JSON.stringify(todoList));
+    } else if (todoList.length === 0) {
+      localStorage.removeItem("todos");
+    }
+  };
+  console.log(todoList);
   return (
     <div>
       <h1 className={styles.h1}>
@@ -35,7 +37,7 @@ function App() {
         <img src={logo} alt="Logo from React" />
       </h1>
       <AddTodo onAddTodo={addTodoHandler} todosAmount={todoList.length} />
-      <TodoList todoList={todoList} onDeleteTodo={deleteTodoHandler} />
+      { todoList.length > 0 && <TodoList todoList={todoList} onDeleteTodo={deleteTodoHandler} />}
     </div>
   );
 }
