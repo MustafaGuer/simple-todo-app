@@ -40,6 +40,7 @@ const AddTodo = (props) => {
       todo: enteredTodo,
       date: enteredDateTime,
     };
+
     props.onAddTodo(todo);
 
     setEnteredTodo("");
